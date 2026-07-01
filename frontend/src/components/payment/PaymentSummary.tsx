@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getTransportById } from "../../services/transportService";
 import { validatePromo } from "../../services/promoService";
 import type { TransportType } from "../../types/TransportType";
+import api from "../services/api";
 
 interface Props {
   transportId?: number;
@@ -122,11 +123,10 @@ const PaymentSummary: React.FC<Props> = ({
       payload.totalGuests = seats.length || 1;
     }
 
-    const response = await fetch("http://localhost:8080/api/bookings/confirm", {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(payload),
-    });
+const response = await api.post(
+  "/api/bookings/confirm",
+  payload
+);
 
     if (!response.ok) {
       throw new Error("Gagal menyimpan data booking ke server");
@@ -167,21 +167,19 @@ const PaymentSummary: React.FC<Props> = ({
 
       const safePaymentMethod = getMidtransCode(paymentMethod);
 
-      const response = await fetch("http://localhost:8080/api/payments/charge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          totalAmount: amount,
-          paymentMethod: safePaymentMethod,
-          promoCode: appliedPromoCode || null,
-        }),
-      });
+const response = await api.post("/api/payments/charge", {
+  totalAmount: amount,
+  paymentMethod: safePaymentMethod,
+  promoCode: appliedPromoCode || null,
+});
 
-      if (!response.ok) {
-        throw new Error("Gagal mengambil token dari backend");
-      }
+const response = await api.post("/api/payments/charge", {
+    totalAmount: amount,
+    paymentMethod: safePaymentMethod,
+    promoCode: appliedPromoCode || null,
+});
 
-      const data = await response.json();
+      const data = response.data;
       const snapToken = data.token;
 
       // @ts-ignore
