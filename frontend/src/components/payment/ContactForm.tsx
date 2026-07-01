@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 const ContactForm: React.FC = () => {
   const [contact, setContact] = useState({
@@ -30,9 +30,7 @@ const ContactForm: React.FC = () => {
         const token = localStorage.getItem("token");
         
         // Nembak ke endpoint /users/me di Backend Java
-        const res = await axios.get("http://localhost:8080/api/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+const res = await api.get("/api/profile");
 
         // Masukin data balasan dari Java ke dalam form
         setContact({
