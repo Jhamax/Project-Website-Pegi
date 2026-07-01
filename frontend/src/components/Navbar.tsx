@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Bell, UserCircle, LogOut, User as UserIcon, Settings, Calendar } from "lucide-react";
-import axios from "axios";
 import "./Navbar.css";
+import api from "../services/api";
 
 interface NavbarProps {
   username?: string;
@@ -47,10 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
     setIsLoggedIn(true);
 
-    try {
-      const res = await axios.get("http://localhost:8080/api/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+const res = await api.get("/api/profile");
 
       const data = res.data;
       // Prioritas: fullName > name > username, sesuai mapping yang sudah ada di ProfilePage
