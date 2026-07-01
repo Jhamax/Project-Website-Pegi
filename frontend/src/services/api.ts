@@ -1,14 +1,13 @@
 import axios from 'axios';
 
-// Ganti baseURL dengan URL server backend Anda saat produksi
 const api = axios.create({
-  baseURL: 'http://localhost:8080', 
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// (Opsional) Interceptor untuk menyisipkan token login otomatis di setiap request
+// Interceptor untuk menyisipkan token login otomatis
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token && config.headers) {
